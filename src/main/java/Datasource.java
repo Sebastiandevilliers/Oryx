@@ -57,8 +57,8 @@ public class Datasource {
             Statement statement = conn.createStatement();
             statement.execute("CREATE TABLE IF NOT EXISTS EMPLOYEES " +
                     " (FIRSTNAME TEXT, LASTNAME TEXT, ETHNICITY TEXT, SEX TEXT, DISABLED TEXT, POSITION TEXT, AGE INT, EMPNUM INT)");
-            insertIntoEmployees = conn.prepareStatement(INSERT_EMPLOYEE);
-            queryEmployees = conn.prepareStatement(QUERY_EMPLOYEES);
+         //  insertIntoEmployees = conn.prepareStatement(INSERT_EMPLOYEE);
+         //      queryEmployees = conn.prepareStatement(QUERY_EMPLOYEES);
 
             return true;
         } catch (SQLException e){
@@ -104,7 +104,7 @@ public class Datasource {
         }
     }
 
-    public void insertEmployee(String firstName, String lastName, String ethnicity, String sex, boolean disabality,
+    public void insertEmployee(String firstName, String lastName, String ethnicity, String sex, boolean disebality,
                                String position, int age) {
         try{
             conn.setAutoCommit(false);
@@ -112,14 +112,14 @@ public class Datasource {
             queryEmployees.setString(2, lastName);
             queryEmployees.setString(3, ethnicity);
             queryEmployees.setString(4, sex);
-            queryEmployees.setBoolean(5, disabality);
+            queryEmployees.setBoolean(5, disebality);
             queryEmployees.setString(6, position);
             queryEmployees.setInt(7, age);
             insertIntoEmployees.setString(1, firstName);
             insertIntoEmployees.setString(2, lastName);
             insertIntoEmployees.setString(3, ethnicity);
             insertIntoEmployees.setString(4, sex);
-            insertIntoEmployees.setBoolean(5, disabality);
+            insertIntoEmployees.setBoolean(5, disebality);
             insertIntoEmployees.setString(6, position);
             insertIntoEmployees.setInt(7, age);
 
