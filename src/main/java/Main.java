@@ -8,6 +8,13 @@ public class Main {
             System.out.println("Can't open datasource");
             return;
         }
+        datasource.insertEmployeeName("drie", "jan", "white","Male",false,"Manager",67);
+      //  datasource.insertEthnicity("White");
+
+
+
+
+
         List<Employees> employees = datasource.queryEmployees();
         if(employees == null){
             System.out.println("No Employees");
