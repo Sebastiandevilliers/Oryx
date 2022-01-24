@@ -1,6 +1,10 @@
+import javax.management.Query;
+import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static javax.swing.UIManager.getInt;
 
 public class Datasource<COLUMN_LASTNAME> {
 
@@ -11,13 +15,14 @@ public class Datasource<COLUMN_LASTNAME> {
 
     //  Employee Table
     public static final String TABLE_EMPLOYEES = "EMPLOYEES";
-    public static final String COLUMN_EMPNUM ="Employee Number";
+    public static final String COLUMN_EMPNUM = "Employee Number";
     public static final String COLUMN_FIRSTNAME = "FIRSTNAME";
     public static final String COLUMN_LASTNAME = "LASTNAME";
     public static final String COLUMN_ETHNICITY = "ETHNICITY";
     public static final String COLUMN_SEX = "sex";
     public static final String COLUMN_DISABLED = "disabled";
     public static final String COLUMN_POSITION = "Position";
+   // public static final int COLUMN_EMPNUM = "empnum";
     public static final String COlUMN_AGE = "age";
     public static final int INDEX_FIRSTNAME = 1;
     public static final int INDEX_LASTNAME = 2;
@@ -60,6 +65,7 @@ public class Datasource<COLUMN_LASTNAME> {
             TABLE_EMPLOYEES + " WHERE " + COlUMN_AGE + " = ?";
     public static final String INSERT_COMPLAINT = "INSERT INTO " + TABLE_COMPLAINTS +
             '(' + COLUMN_COMPLAINT_NUM + COLUMN_EMPLOYEE_NUM + COLUMN_COMPLAINT_LINK + ") VALUES(?,? ,?)";
+
 
 
     Connection conn;
@@ -229,19 +235,23 @@ public class Datasource<COLUMN_LASTNAME> {
 
         }
     }
+        //Delete Employee
+    public void deleteEmployee(int numb) {
+            String sql = "DELETE FROM  EMPLOYEES  WHERE empnum  = ?";
 
-    public  void  deleteEmployee(int num) {
-        String sql = "DELETE FROM EMPLOYEES WHERE ( FIRSTNAME, LASTNAME, ETHNICITY, sex, disabled, Position, age, empnum  ) VALUES (?,?,?,?,?,?,?,?)";
-        try {
-            Connection conn = DriverManager.getConnection(CONNECTION_STRING);
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            preparedStatement.setInt(INDEX_EMPNUM, Integer.parseInt(COLUMN_EMPNUM));
-            preparedStatement.setString(INDEX_EMPNUM, Integer.parseInt(COLUMN_EMPNUM));
-            preparedStatement.executeUpdate();
 
-        } catch (SQLException e) {
-            System.out.println("Could not Delete" + e.getMessage());
-        }
+            try {
+
+                Connection conn = DriverManager.getConnection(CONNECTION_STRING);
+                PreparedStatement pstmt =conn.prepareStatement(sql);
+                pstmt.setInt(1, numb);
+                pstmt.executeUpdate();
+
+
+                }catch(SQLException e){
+                System.out.println("Could not Delete " + e.getMessage());
+            }
+
     }
 
 }

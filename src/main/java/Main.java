@@ -74,8 +74,7 @@ public class Main {
 
                 case 4:
                     System.out.println("Enter Employee Number");
-                   int num = scanner.nextInt();
-
+                    int num = scanner.nextInt();
                     datasource.deleteEmployee(num);
 
                     break;
