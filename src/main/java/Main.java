@@ -13,20 +13,14 @@ public class Main {
             System.out.println("Can't open datasource");
             return;
         }
+        mainMenu();
 
         boolean flag = false;
 
         while (!flag){
 
-            System.out.println("Please select option:");
-            System.out.println("1.- List Employees");
-            System.out.println("2.- Search Employees");
-            System.out.println("3.- Add Employees");
-            System.out.println("4.- Delete Employee");
-            System.out.println("5.- Add Complaint");
-            System.out.println("6.- Search Complaints");
-            System.out.println("7.- Delete Complaint");
-            System.out.println("8.- Exit");
+            System.out.println("Press 8 to return to main menu");
+
 
 
             int n = scanner.nextInt();
@@ -54,7 +48,7 @@ public class Main {
                     int employeeNumber = scanner.nextInt();
                     datasource.searchEmployees();
                         List<Employees> searchEmployees = datasource.searchEmployees();
-                    if(searchEmployees == null){
+                    if(searchEmployees != null){
                         System.out.println("No Employees");
                         return;
                     }
@@ -76,60 +70,82 @@ public class Main {
                     System.out.println("Enter Employee Number");
                     int num = scanner.nextInt();
                     datasource.deleteEmployee(num);
+                    System.out.println("Employee Removed");
 
                     break;
 
                 case 5:
                     inputComplaint();
+                    System.out.println("Complaint Entered");
                     break;
 
                 case 6:
-                    //search complaints
+                    System.out.println("Please enter Employee Number");
+                    int numComp = scanner.nextInt();
+                    datasource.searchEmployees();
+                    List<Employees> comp = datasource.searchEmployees();
+                    List<Complaints> compList = datasource.queryComplaints();
+                    if(comp == null){
+                        System.out.println("No Employees");
+                        return;
+                    }
+                    for(Employees emp : comp){
+                        if(emp.getEmpNumber() == numComp) {
+                            System.out.println("Name: " + emp.getFirstName() + " " + emp.getLastName() +
+                                    " Employee Number: " + emp.getEmpNumber());
+                            System.out.println("---------");
+
+                        }
+
+                    }
+                    if (compList == null) {
+                        System.out.println("No Complaints");
+                        return;
+                    }
+                    System.out.println("Complaints");
+                    System.out.println("---------");
+
+                    for(Complaints compl : compList){
+                        if(compl.getEmployeeNum() == numComp){
+                            System.out.println("Complaint Number: " + compl.getComplaintNumber() + " " + "Complaint Link: " +
+                                    compl.getComplaintLink());
+                            System.out.println("---------");
+                            System.out.println("---------");
+
+                        }
+                    }
+
                     break;
 
                 case 7:
-                    //Delete Complaint
+                    System.out.println("Enter Complaint Number");
+                    int numCom = scanner.nextInt();
+                    datasource.deleteComp(numCom);
+                    System.out.println("Complaint: " + numCom + " Deleted");
                     break;
 
                 case 8:
+                    mainMenu();
+                    break;
+
+                case 9:
                     flag = true;
                 }
 
-    //   System.out.println(insertEmployeeNum() + " Employee");
-      //  datasource.insertEmployeeName("LOP", "jan", "white","Male",false,"Manager",67,5);
-      //  datasource.insertEthnicity("White");
-
-
-
-
-
-
-
-
-
-        //inputEmp();
-       // printEmployees();
-
-
-
-
-
-
-
-     //  List<Employees> employeeNum = datasource.queryEmpNum();
-     //   if(employeeNum == null){
-     //       System.out.println("No Number");
-    //        return;
-     //   }
-      //  for(Employees employee : employeeNum){
-       //     System.out.println("Name: " + employee.getFirstName() + " " + employee.getLastName() + "\n" +  " EN: " + employee.getEmpNumber());
-      //  }
-
-    //    datasource.insertEmployeeName("Frank","de Villiers","white","male",false,"management",34,randomNum());
-
-
-
     }
+        }
+
+        public static void mainMenu(){
+            System.out.println("Please select option:");
+            System.out.println("1.- List Employees");
+            System.out.println("2.- Search Employees");
+            System.out.println("3.- Add Employees");
+            System.out.println("4.- Delete Employee");
+            System.out.println("5.- Add Complaint");
+            System.out.println("6.- Search Complaints");
+            System.out.println("7.- Delete Complaint");
+            System.out.println("8.- Main Menu");
+            System.out.println("9.- Exit");
         }
 
 
