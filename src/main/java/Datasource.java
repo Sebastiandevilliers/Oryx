@@ -229,6 +229,7 @@ public class Datasource<COLUMN_LASTNAME> {
             preparedStatement.setInt(INDEX_EMPLOYEE_NUM, employeeNum);
             preparedStatement.setInt(INDEX_COMPLAINT_NUM, complaintNum);
             preparedStatement.setString(INDEX_COMPLAINT_LINK, complaintLink);
+            preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
             System.out.println("Could not add Complaint" + e.getMessage());
