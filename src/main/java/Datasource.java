@@ -9,9 +9,7 @@ public class Datasource<COLUMN_LASTNAME> {
 
     public static final String CONNECTION_STRING = "jdbc:sqlite:C:\\Users\\fpsde\\Documents\\Database\\" + DB_NAME;
 
-    //  public void createTable
-
-
+    //  Employee Table
     public static final String TABLE_EMPLOYEES = "EMPLOYEES";
     public static final String COLUMN_EMPNUM ="Employee Number";
     public static final String COLUMN_FIRSTNAME = "FIRSTNAME";
@@ -29,6 +27,15 @@ public class Datasource<COLUMN_LASTNAME> {
     public static final int INDEX_POSITION = 6;
     public static final int INDEX_AGE = 7;
     public static final int INDEX_EMPNUM = 8;
+
+    //Complaints
+    public static final String TABLE_COMPLAINTS = "complaints";
+    public static final String COLUMN_EMPLOYEE_NUM = "employeeNum";
+    public static final String COLUMN_COMPLAINT_NUM = "complaintNum";
+    public static final String COLUMN_COMPLAINT_LINK = "complaintLink";
+    public static final int INDEX_EMPLOYEE_NUM = 1;
+    public static final int INDEX_COMPLAINT_NUM = 2;
+    public static final int INDEX_COMPLAINT_LINK = 3;
 
 
 
@@ -51,11 +58,14 @@ public class Datasource<COLUMN_LASTNAME> {
 
     public static final String QUERY_EMPLOYEES = "SELECT " + COLUMN_FIRSTNAME + " FROM " +
             TABLE_EMPLOYEES + " WHERE " + COlUMN_AGE + " = ?";
+    public static final String INSERT_COMPLAINT = "INSERT INTO " + TABLE_COMPLAINTS +
+            '(' + COLUMN_COMPLAINT_NUM + COLUMN_EMPLOYEE_NUM + COLUMN_COMPLAINT_LINK + ") VALUES(?,? ,?)";
 
 
     Connection conn;
     private PreparedStatement insertIntoEmployees;
     private PreparedStatement queryEmployees;
+    private PreparedStatement insertComplaint;
 
 
 
@@ -94,6 +104,65 @@ public class Datasource<COLUMN_LASTNAME> {
         }
     }
 
+    public List<Employees> queryEmpNum(){
+        try(Statement statement = conn.createStatement();
+            ResultSet results = statement.executeQuery("SELECT * FROM " + TABLE_EMPLOYEES)){
+
+            List<Employees> employeeNum = new ArrayList<>();
+            while(results.next()){
+                Employees employees = new Employees();
+                employees.setFirstName(results.getString(INDEX_FIRSTNAME));
+                employees.setLastName(results.getString(INDEX_LASTNAME));
+                employees.setEmpNumber(results.getInt(INDEX_EMPNUM));
+                employeeNum.add(employees);
+
+            }
+            return employeeNum;
+
+        }catch (SQLException e){
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public List<Employees> numVerify(){
+        try(Statement statement = conn.createStatement();
+            ResultSet results = statement.executeQuery("SELECT * FROM " + TABLE_EMPLOYEES)){
+
+            List<Employees> employeeNumVerify = new ArrayList<>();
+            while(results.next()){
+                Employees employees = new Employees();
+                employees.setFirstName(results.getString(INDEX_FIRSTNAME));
+                employeeNumVerify.add(employees);
+
+            }
+            return employeeNumVerify;
+
+        }catch (SQLException e){
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+    //Search Employee With number
+    public List<Employees> searchEmployees(){
+        try(Statement statement = conn.createStatement();
+            ResultSet result = statement.executeQuery("SELECT * FROM " + TABLE_EMPLOYEES  )){
+            List<Employees> empNum = new ArrayList<>();
+            while (result.next()){
+                Employees emp = new Employees();
+                emp.setFirstName(result.getString(INDEX_FIRSTNAME));
+                emp.setLastName(result.getString(INDEX_LASTNAME));
+                emp.setEmpNumber(result.getInt(INDEX_EMPNUM));
+                empNum.add(emp);
+
+            }
+            return empNum;
+        }catch (SQLException e){
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+    //Print list of employees
     public List<Employees> queryEmployees(){
 
         try(Statement statement = conn.createStatement();
@@ -104,6 +173,12 @@ public class Datasource<COLUMN_LASTNAME> {
                 Employees employees = new Employees();
                 employees.setFirstName(results.getString(INDEX_FIRSTNAME));
                 employees.setLastName(results.getString(INDEX_LASTNAME));
+                employees.setEthnicity(results.getString(INDEX_ETHNICITY));
+                employees.setSex(results.getString(INDEX_SEX));
+                employees.setDisabled(results.getBoolean(INDEX_DISABLED));
+                employees.setPosition(results.getString(INDEX_POSITION));
+                employees.setAge(results.getInt(INDEX_AGE));
+                employees.setEmpNumber(results.getInt(INDEX_EMPNUM));
                 employee.add(employees);
 
             }
@@ -116,8 +191,8 @@ public class Datasource<COLUMN_LASTNAME> {
     }
     //Adding Employee Name
 
-    public void insertEmployeeName(String firstName, String lastName, String ethnicity, String sex, boolean disabled, String position, int age){
-        String sql = "INSERT INTO EMPLOYEES(FIRSTNAME, LASTNAME, ETHNICITY, sex, disabled, Position, age  ) VALUES (?,?,?,?,?,?,?)";
+    public void insertEmployeeName(String firstName, String lastName, String ethnicity, String sex, boolean disabled, String position, int age,int num){
+        String sql = "INSERT INTO EMPLOYEES(FIRSTNAME, LASTNAME, ETHNICITY, sex, disabled, Position, age, empnum  ) VALUES (?,?,?,?,?,?,?,?)";
         try{
 
             Connection conn = DriverManager.getConnection(CONNECTION_STRING);
@@ -129,6 +204,7 @@ public class Datasource<COLUMN_LASTNAME> {
             preparedStatement.setBoolean(INDEX_DISABLED,disabled);
             preparedStatement.setString(INDEX_POSITION,position);
             preparedStatement.setInt(INDEX_AGE,age);
+            preparedStatement.setInt(INDEX_EMPNUM,num);
             preparedStatement.executeUpdate();
 
 
@@ -138,74 +214,34 @@ public class Datasource<COLUMN_LASTNAME> {
         }
     }
 
-    //Adding Ethnicity
-
- /*   public void insertEthnicity(String ethnicity){
-        String sql = "INSERT INTO EMPLOYEES(ethnicity) VALUES (?)";
-        try{
-
+    //Add New Complaint
+    public void insertEmployeeComplaint(int employeeNum, int complaintNum, String complaintLink) {
+        String sql = "INSERT INTO COMPLAINTS(EmployeeNum, ComplaintNum, ComplaintLink ) VALUES (?,?,?)";
+        try {
             Connection conn = DriverManager.getConnection(CONNECTION_STRING);
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            preparedStatement.setString(INDEX_ETHNICITY,ethnicity);
+            preparedStatement.setInt(INDEX_EMPLOYEE_NUM, employeeNum);
+            preparedStatement.setInt(INDEX_COMPLAINT_NUM, complaintNum);
+            preparedStatement.setString(INDEX_COMPLAINT_LINK, complaintLink);
+
+        } catch (SQLException e) {
+            System.out.println("Could not add Complaint" + e.getMessage());
+
+        }
+    }
+
+    public  void  deleteEmployee(int num) {
+        String sql = "DELETE FROM EMPLOYEES WHERE ( FIRSTNAME, LASTNAME, ETHNICITY, sex, disabled, Position, age, empnum  ) VALUES (?,?,?,?,?,?,?,?)";
+        try {
+            Connection conn = DriverManager.getConnection(CONNECTION_STRING);
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setInt(INDEX_EMPNUM, Integer.parseInt(COLUMN_EMPNUM));
+            preparedStatement.setString(INDEX_EMPNUM, Integer.parseInt(COLUMN_EMPNUM));
             preparedStatement.executeUpdate();
 
-
-
-        }catch (SQLException e){
-            System.out.println("Could not add" + e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Could not Delete" + e.getMessage());
         }
-    }*/
-
-    public void insertEmployee(String COLUMN_FIRSTNAME ){/* String lastName, String ethnicity, String sex, boolean disability,
-                               String position, int age*/
-        try{
-            conn.setAutoCommit(false);
-            queryEmployees.setString(1,COLUMN_FIRSTNAME);
-         /*   queryEmployees.setString(2, lastName);
-            queryEmployees.setString(3, ethnicity);
-            queryEmployees.setString(4, sex);
-            queryEmployees.setBoolean(5, disability);
-            queryEmployees.setString(6, position);
-            queryEmployees.setInt(7, age);
-            insertIntoEmployees.setString(1, firstName);
-            insertIntoEmployees.setString(2, lastName);
-            insertIntoEmployees.setString(3, ethnicity);
-            insertIntoEmployees.setString(4, sex);
-            insertIntoEmployees.setBoolean(5, disability);
-            insertIntoEmployees.setString(6, position);
-            insertIntoEmployees.setInt(7, age);
-*/
-
-            int affectedRows = insertIntoEmployees.executeUpdate();
-            if(affectedRows == 1){
-                conn.commit();
-            }else {
-                throw new SQLException("Employee insert failed");
-            }
-
-            ResultSet results = queryEmployees.executeQuery();
-
-            //insert employee
-
-        } catch(SQLException e){
-            System.out.println("Employee insert exception: " + e.getMessage());
-            try{
-                System.out.println("Performing rollback");
-                conn.rollback();
-            }catch (SQLException e2){
-                System.out.println("Error: " + e2.getMessage());
-            }
-            finally {
-                try{
-                    System.out.println("Resetting default commit behavior");
-                    conn.setAutoCommit(true);
-                }catch (SQLException e3){
-                    System.out.println("Couldn't reset auto-commit" + e.getMessage());
-                }
-
-            }
-        }
-
-
     }
+
 }
